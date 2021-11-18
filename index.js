@@ -1,14 +1,9 @@
 const express = require('express')
-
-const router = express.Router()
 const app = express()
+const port = 3001
 
-router.get('/users', (req, res) => {
-  console.log('url', req.url)
-  console.log('method', req.method)
-  res.json({ name: 'nova ardiansyah', email: 'nova@gmail.com' })
-})
+const productsRoutes = require('./src/routes/products')
 
-app.use('/', router)
+app.use('/', productsRoutes)
 
-app.listen(3001)
+app.listen(port)
