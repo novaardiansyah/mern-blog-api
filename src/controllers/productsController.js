@@ -1,5 +1,9 @@
 const store = (req, res, next) => {
-  res.json({ name: 'nova ardiansyah', email: 'nova@gmail.com' })
+  res.json({
+    statusCode: 200,
+    message: 'product created',
+    result: req.body.result,
+  })
   next()
 }
 
