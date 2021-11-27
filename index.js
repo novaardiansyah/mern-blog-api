@@ -4,7 +4,9 @@ const bodyParser = require('body-parser')
 const app = express()
 const port = 3001
 
+// ! Routes
 const productsRoutes = require('./src/routes/products')
+const authRoutes = require('./src/routes/auth')
 
 app.use(bodyParser.json())
 
@@ -19,5 +21,6 @@ app.use((req, res, next) => {
 })
 
 app.use('/', productsRoutes)
+app.use('/v1/auth', authRoutes)
 
 app.listen(port)
