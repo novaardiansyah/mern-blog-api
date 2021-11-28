@@ -1,7 +1,7 @@
 const register = (req, res, next) => {
   res.status(201).json({
     statusCode: 201,
-    message: 'user created',
+    message: 'successful registration',
     result: req.body,
   })
   next()
