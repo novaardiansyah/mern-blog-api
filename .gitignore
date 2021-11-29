@@ -40,3 +40,7 @@ jspm_packages
 #Excluding build directory
 public/
 public/backup/
+
+#Environments
+.env-*
+.env
