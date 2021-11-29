@@ -1,3 +1,4 @@
+const Post = require('../models/Post')
 const { validationResult } = require('express-validator')
 
 const store = (req, res, next) => {
@@ -12,22 +13,22 @@ const store = (req, res, next) => {
     throw error
   }
 
-  res.status(201).json({
-    statusCode: 201,
-    message: 'successfully added new data',
-    data: {
-      id: '1',
-      title,
-      content,
-      createdAt: '2020-01-01',
-      updatedAt: '2020-01-01',
-      author: {
-        uuid: '1',
-        name: 'John Doe',
-      },
-    },
+  const NewPost = new Post({
+    title,
+    content,
+    author: { uuid: '1', username: 'admin' },
   })
-  next()
+
+  NewPost.save()
+    .then((post) => {
+      res.status(201).json({
+        message: 'Post created successfully',
+        result: post,
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
 
 module.exports = { store }
