@@ -23,4 +23,15 @@ app.use((req, res, next) => {
 app.use('/v1/blog', blogRoutes)
 app.use('/v1/auth', authRoutes)
 
+app.use((error, req, res, next) => {
+  console.log(req.body)
+
+  res.status(error.status || 500).json({
+    message: error.message || 'Something went wrong',
+    data: error.data,
+  })
+
+  next()
+})
+
 app.listen(port)
