@@ -8,8 +8,8 @@ const port = 3001
 require('dotenv').config()
 
 // ! Routes
-const blogRoutes = require('./src/routes/blog')
-const authRoutes = require('./src/routes/auth')
+const postRoutes = require('./src/routes/postRoutes')
+const authRoutes = require('./src/routes/authRoutes')
 
 app.use(bodyParser.json())
 
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/v1/blog', blogRoutes)
+app.use('/v1/post', postRoutes)
 app.use('/v1/auth', authRoutes)
 
 app.use((error, req, res, next) => {

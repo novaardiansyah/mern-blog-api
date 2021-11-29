@@ -3,7 +3,7 @@ const router = express.Router()
 const { body } = require('express-validator')
 
 // ! Controller
-const blogController = require('../controllers/blogController')
+const postController = require('../controllers/postController')
 
 router.post(
   '/create',
@@ -15,7 +15,7 @@ router.post(
       .isLength({ min: 5 })
       .withMessage('Content must be at least 5 characters long'),
   ],
-  blogController.store
+  postController.store
 )
 
 module.exports = router
