@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const multer = require('multer')
+const path = require('path')
 const bodyParser = require('body-parser')
 
 const app = express()
@@ -32,6 +33,8 @@ const fileFilter = (req, file, cb) => {
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
 )
+
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 // ! Routes
 const postRoutes = require('./src/routes/postRoutes')
