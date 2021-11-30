@@ -1,11 +1,37 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const multer = require('multer')
 const bodyParser = require('body-parser')
 
 const app = express()
 const port = 3001
 
 require('dotenv').config()
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + '-' + file.originalname)
+  },
+})
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true)
+  } else {
+    cb(null, false)
+  }
+}
+
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
+)
 
 // ! Routes
 const postRoutes = require('./src/routes/postRoutes')
@@ -27,8 +53,6 @@ app.use('/v1/post', postRoutes)
 app.use('/v1/auth', authRoutes)
 
 app.use((error, req, res, next) => {
-  console.log(req.body)
-
   res.status(error.status || 500).json({
     message: error.message || 'Something went wrong',
     data: error.data,

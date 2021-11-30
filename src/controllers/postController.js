@@ -2,8 +2,6 @@ const Post = require('../models/Post')
 const { validationResult } = require('express-validator')
 
 const store = (req, res, next) => {
-  const { title, content } = req.body
-
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
@@ -13,9 +11,16 @@ const store = (req, res, next) => {
     throw error
   }
 
+  if (!req.file) {
+    const error = new Error('No image provided')
+    error.status = 422
+    throw error
+  }
+
   const NewPost = new Post({
-    title,
-    content,
+    title: req.body.title,
+    content: req.body.content,
+    image: req.file.path,
     author: { uuid: '1', username: 'admin' },
   })
 
