@@ -7,16 +7,29 @@ const Post = require('../models/Post')
 
 // * Get all posts
 const index = (req, res, next) => {
-  Post.find()
-    .sort({ date: -1 })
+  const currentPage = parseInt(req.query.page) || 1
+  const perPage = parseInt(req.query.perPage) || 5
+  let totalItems
+
+  Post.countDocuments()
+    .then((count) => {
+      totalItems = parseInt(count)
+      return Post.find()
+        .sort({ date: -1 })
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage)
+    })
     .then((posts) => {
       res.status(200).json({
         message: 'Posts fetched successfully',
         result: posts,
+        total_items: totalItems,
+        per_page: perPage,
+        current_page: currentPage,
       })
     })
     .catch((err) => {
-      console.log(err)
+      next(err)
     })
 }
 
