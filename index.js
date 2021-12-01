@@ -52,7 +52,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/v1/post', postRoutes)
+app.use('/v1/posts', postRoutes)
 app.use('/v1/auth', authRoutes)
 
 app.use((error, req, res, next) => {

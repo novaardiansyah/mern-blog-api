@@ -1,5 +1,21 @@
-const Post = require('../models/Post')
 const { validationResult } = require('express-validator')
+
+// ! Models
+const Post = require('../models/Post')
+
+const index = (req, res, next) => {
+  Post.find()
+    .sort({ date: -1 })
+    .then((posts) => {
+      res.status(200).json({
+        message: 'Posts fetched successfully',
+        data: posts,
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 
 const store = (req, res, next) => {
   const errors = validationResult(req)
@@ -30,10 +46,12 @@ const store = (req, res, next) => {
         message: 'Post created successfully',
         result: post,
       })
+
+      next()
     })
     .catch((err) => {
-      console.log(err)
+      next(err)
     })
 }
 
-module.exports = { store }
+module.exports = { index, store }

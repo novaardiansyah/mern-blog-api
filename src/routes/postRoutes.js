@@ -5,6 +5,8 @@ const { body } = require('express-validator')
 // ! Controller
 const postController = require('../controllers/postController')
 
+router.get('/', postController.index)
+
 router.post(
   '/create',
   [
