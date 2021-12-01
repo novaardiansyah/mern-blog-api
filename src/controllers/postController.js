@@ -3,13 +3,14 @@ const { validationResult } = require('express-validator')
 // ! Models
 const Post = require('../models/Post')
 
+// * Get all posts
 const index = (req, res, next) => {
   Post.find()
     .sort({ date: -1 })
     .then((posts) => {
       res.status(200).json({
         message: 'Posts fetched successfully',
-        data: posts,
+        result: posts,
       })
     })
     .catch((err) => {
@@ -17,6 +18,29 @@ const index = (req, res, next) => {
     })
 }
 
+//  * Get single post
+const show = (req, res, next) => {
+  Post.findById(req.params.id)
+    .then((post) => {
+      if (!post) {
+        const error = new Error('Post not found')
+        error.statusCode = 404
+        throw error
+      }
+
+      res.status(200).json({
+        message: 'Post fetched successfully',
+        result: post,
+      })
+
+      next()
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
+
+// * Create post
 const store = (req, res, next) => {
   const errors = validationResult(req)
 
@@ -54,4 +78,50 @@ const store = (req, res, next) => {
     })
 }
 
-module.exports = { index, store }
+const update = (req, res, next) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation Failed')
+    error.status = 422
+    error.data = errors.array()
+    throw error
+  }
+
+  if (!req.file) {
+    const error = new Error('No image provided')
+    error.status = 422
+    throw error
+  }
+
+  Post.findById(req.params.id)
+    .then((post) => {
+      if (!post) {
+        const error = new Error('Post not found')
+        error.statusCode = 404
+        throw error
+      }
+
+      if (req.file) {
+        post.image = req.file.path
+      }
+
+      post.title = req.body.title
+      post.content = req.body.content
+
+      return post.save()
+    })
+    .then((post) => {
+      res.status(200).json({
+        message: 'Post updated successfully',
+        result: post,
+      })
+
+      next()
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
+
+module.exports = { index, show, store, update }

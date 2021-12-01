@@ -5,19 +5,26 @@ const { body } = require('express-validator')
 // ! Controller
 const postController = require('../controllers/postController')
 
+// * General Rules
+const generalRules = [
+  body('title')
+    .isLength({ min: 5 })
+    .withMessage('Title must be at least 5 characters long'),
+  body('content')
+    .isLength({ min: 5 })
+    .withMessage('Content must be at least 5 characters long'),
+]
+
+// * Get all posts
 router.get('/', postController.index)
 
-router.post(
-  '/create',
-  [
-    body('title')
-      .isLength({ min: 5 })
-      .withMessage('Title must be at least 5 characters long'),
-    body('content')
-      .isLength({ min: 5 })
-      .withMessage('Content must be at least 5 characters long'),
-  ],
-  postController.store
-)
+// * Get single post
+router.get('/:id', postController.show)
+
+// * Create post
+router.post('/create', generalRules, postController.store)
+
+// * Update post
+router.put('/:id', generalRules, postController.update)
 
 module.exports = router
