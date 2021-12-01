@@ -18,13 +18,16 @@ const generalRules = [
 // * Get all posts
 router.get('/', postController.index)
 
-// * Get single post
-router.get('/:id', postController.show)
-
 // * Create post
 router.post('/create', generalRules, postController.store)
 
+// * Get single post
+router.get('/:id', postController.show)
+
 // * Update post
 router.put('/:id', generalRules, postController.update)
+
+// * Delete post
+router.delete('/:id', postController.destroy)
 
 module.exports = router

@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const { validationResult } = require('express-validator')
 
 // ! Models
@@ -78,6 +80,7 @@ const store = (req, res, next) => {
     })
 }
 
+// * Update post
 const update = (req, res, next) => {
   const errors = validationResult(req)
 
@@ -124,4 +127,38 @@ const update = (req, res, next) => {
     })
 }
 
-module.exports = { index, show, store, update }
+// * Delete post
+const destroy = (req, res, next) => {
+  Post.findById(req.params.id)
+    .then((post) => {
+      if (!post) {
+        const error = new Error('Post not found')
+        error.statusCode = 404
+        throw error
+      }
+
+      removeImage(post.image)
+      return Post.findByIdAndDelete(req.params.id)
+    })
+    .then((post) => {
+      res.status(200).json({
+        message: 'Post deleted successfully',
+        result: post,
+      })
+      next()
+    })
+    .catch((err) => {
+      next(err)
+    })
+}
+
+const removeImage = (imagePath) => {
+  const filePath = path.join(__dirname, '../../', imagePath)
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.log(err)
+    }
+  })
+}
+
+module.exports = { index, show, store, update, destroy }
